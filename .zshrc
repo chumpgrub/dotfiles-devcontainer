@@ -79,6 +79,7 @@ alias gf='git fetch'
 # Apps
 alias nv='nvim'
 alias lg='lazygit'
+alias mux='tmuxinator'
 
 # Debian aliases (in case ~/.local/bin shims aren't on PATH)
 command -v batcat >/dev/null && ! command -v bat >/dev/null && alias bat='batcat'

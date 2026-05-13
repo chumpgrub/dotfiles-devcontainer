@@ -30,7 +30,9 @@ apt_install() {
     ripgrep \
     fd-find \
     direnv \
-    locales
+    locales \
+    ruby \
+    ruby-dev
   # Debian aliases: batcat / fdfind — link friendlier names into ~/.local/bin
   mkdir -p "$HOME/.local/bin"
   command -v batcat  >/dev/null && ln -snf "$(command -v batcat)"  "$HOME/.local/bin/bat"
@@ -114,6 +116,17 @@ install_yazi() {
   ok "yazi installed"
 }
 
+install_tmuxinator() {
+  if command -v tmuxinator >/dev/null 2>&1; then ok "tmuxinator present"; return; fi
+  if ! command -v gem >/dev/null 2>&1; then
+    warn "ruby/gem missing — skipping tmuxinator"
+    return
+  fi
+  info "Installing tmuxinator..."
+  $SUDO gem install --no-document tmuxinator >/dev/null
+  ok "tmuxinator installed"
+}
+
 install_mise() {
   if command -v mise >/dev/null 2>&1; then ok "mise present"; return; fi
   info "Installing mise..."
@@ -129,6 +142,7 @@ main() {
   install_lazygit
   install_lsd
   install_yazi
+  install_tmuxinator
   install_mise
   ok "All tools installed."
 }
