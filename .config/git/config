@@ -1,0 +1,28 @@
+# Container-friendly git defaults.
+# Identity is intentionally NOT set here — provide it via:
+#   - VS Code's automatic credential/ident forwarding, or
+#   - a ~/.gitconfig.local on the host mounted in, or
+#   - env vars GIT_AUTHOR_NAME / GIT_AUTHOR_EMAIL
+[init]
+    defaultBranch = main
+
+[safe]
+    # Workspace mounts often have host UID != container UID.
+    directory = *
+
+[pull]
+    rebase = false
+
+[push]
+    default = simple
+    autoSetupRemote = true
+
+[core]
+    excludesfile = ~/.config/git/ignore
+    editor = nvim
+
+[color]
+    ui = auto
+
+[include]
+    path = ~/.gitconfig.local

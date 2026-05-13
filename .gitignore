@@ -1,0 +1,6 @@
+.DS_Store
+.config/tmux/plugins/
+.config/nvim/lazy-lock.json
+.config/nvim/.neoconf.json
+**/CLAUDE.local.md
+**/.claude/settings.local.json
