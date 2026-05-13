@@ -40,12 +40,20 @@ apt_install() {
 
 install_neovim() {
   if command -v nvim >/dev/null 2>&1; then ok "neovim present"; return; fi
-  info "Installing neovim (appimage)..."
-  local arch; arch="$(uname -m)"
-  local url="https://github.com/neovim/neovim/releases/latest/download/nvim-linux-${arch}.tar.gz"
-  curl -fsSL "$url" -o /tmp/nvim.tar.gz
+  info "Installing neovim..."
+  local nv_arch
+  case "$(uname -m)" in
+    x86_64)          nv_arch="x86_64" ;;
+    aarch64|arm64)   nv_arch="arm64"  ;;
+    *) warn "neovim: unsupported arch $(uname -m) — skipping"; return ;;
+  esac
+  local url="https://github.com/neovim/neovim/releases/latest/download/nvim-linux-${nv_arch}.tar.gz"
+  if ! curl -fsSL "$url" -o /tmp/nvim.tar.gz; then
+    warn "neovim download failed ($url) — skipping"
+    return
+  fi
   $SUDO tar -C /opt -xzf /tmp/nvim.tar.gz
-  $SUDO ln -snf "/opt/nvim-linux-${arch}/bin/nvim" /usr/local/bin/nvim
+  $SUDO ln -snf "/opt/nvim-linux-${nv_arch}/bin/nvim" /usr/local/bin/nvim
   rm -f /tmp/nvim.tar.gz
   ok "neovim installed"
 }
