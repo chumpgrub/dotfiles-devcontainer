@@ -51,11 +51,19 @@ link_tree() {
     fi
 
     if [[ -e "$dest" ]]; then
-      warn "skipping $dest (exists, not a symlink) — move it aside and re-run"
-      continue
+      # Real file/dir at the target (e.g. base image's pre-baked ~/.zshrc).
+      # Back it up to $dest.pre-dotfiles once, then replace with our symlink.
+      # Subsequent runs see the backup already exists and just remove the
+      # stale dest, so we never overwrite the original backup.
+      local backup="${dest}.pre-dotfiles"
+      if [[ ! -e "$backup" ]]; then
+        mv "$dest" "$backup"
+        echo "    [back] $dest -> $backup"
+      else
+        rm -rf "$dest"
+      fi
     fi
 
-    # Make sure the parent dir exists (it usually will, but be safe).
     mkdir -p "$dest_root"
     ln -s "$src" "$dest"
     echo "    [link] $dest -> $src"
