@@ -120,7 +120,11 @@ if [[ "${DOTFILES_AUTO_TMUX:-0}" == "1" ]] \
    && [ -f /.dockerenv ] \
    && command -v tmux >/dev/null \
    && [ -z "${TMUX:-}" ]; then
-  tmux attach -t default || tmux new -s default
+  if command -v tmuxinator >/dev/null && [ -f "$HOME/.config/tmuxinator/default.yml" ]; then
+    tmux attach -t default 2>/dev/null || mux start default
+  else
+    tmux attach -t default 2>/dev/null || tmux new -s default
+  fi
 fi
 
 # Per-machine overrides

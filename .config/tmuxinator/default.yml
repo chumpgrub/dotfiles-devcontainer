@@ -1,0 +1,14 @@
+# Default tmuxinator layout for dev-container workspaces.
+# Matches the C-a binding in tmux.conf that toggles between the "code"
+# and "claude" windows, and the "default" session name the zshrc
+# auto-attaches to.
+#
+# Start with:  mux start default       (or just `mux` if no other args)
+name: default
+root: <%= ENV["PWD"] %>/main
+
+windows:
+  - build: pnpm run dev:https
+  - code: nvim
+  - claude: claude
+  - lazy: lg
