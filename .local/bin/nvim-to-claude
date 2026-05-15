@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+
+SESSION="${1:-}"
+FILE="$2"
+START="$3"
+END="$4"
+
+if [[ -z "$SESSION" || -z "$FILE" ]]; then
+  echo "Usage: nvim-to-claude <tmux-session> <file> [start] [end]" >&2
+  exit 1
+fi
+
+if [[ -n "$START" && -n "$END" ]]; then
+  REF="@$FILE:$START-$END"
+elif [[ -n "$START" ]]; then
+  REF="@$FILE:$START"
+else
+  REF="@$FILE"
+fi
+
+TARGET_WINDOW=$(tmux list-windows -t "$SESSION" -F '#{window_index}:#{window_name}' \
+  | grep ':claude$' | cut -d: -f1)
+
+if [[ -z "$TARGET_WINDOW" ]]; then
+  echo "No 'claude' window found in session $SESSION" >&2
+  exit 1
+fi
+
+tmux send-keys -t "$SESSION:$TARGET_WINDOW" "Escape" "Enter"
+sleep 0.05
+tmux send-keys -t "$SESSION:$TARGET_WINDOW" "$REF" "Enter"
+tmux select-window -t "$SESSION:$TARGET_WINDOW"
